@@ -1,0 +1,244 @@
+/* Import Google Fonts (must be at the very top) */
+@import url("https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+
+/* Tailwind must come after font imports */
+@import "tailwindcss";
+
+/* Base Theme (Light by default) */
+:root {
+  --background: 255 255 255; /* rgb(255,255,255) */
+  --foreground: 23 23 23; /* rgb(23,23,23) */
+  /* Button colors */
+  /* Golden button colors */
+  --btn-bg: #d4af37; /* Rich gold */
+  --btn-bg-hover: #b8860b; /* Dark goldenrod */
+  --btn-text: #ffffff;
+}
+
+/* Dark Theme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 10 10 10; /* rgb(10,10,10) */
+    --foreground: 237 237 237; /* rgb(237,237,237) */
+  }
+}
+
+/* Golden Theme */
+[data-theme="golden"] {
+  --background: 255 248 220; /* cornsilk-like background */
+  --foreground: 184 134 11; /* goldenrod text */
+}
+
+/* Black Theme */
+[data-theme="black"] {
+  --background: 0 0 0; /* pure black */
+  --foreground: 255 255 255; /* pure white */
+}
+
+/* Tailwind theme mappings */
+@theme inline {
+  --color-background: rgb(var(--background) / <alpha-value>);
+  --color-foreground: rgb(var(--foreground) / <alpha-value>);
+
+  --font-display: "Cinzel Decorative", serif;
+  --font-body: "Nunito", sans-serif;
+}
+
+/* Global defaults */
+body {
+  @apply bg-background text-foreground font-body;
+}
+
+button {
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-family: "Nunito", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* button:hover {
+  background-color: var(--btn-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+} */
+
+@keyframes slow-zoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+.animate-slow-zoom {
+  /* animation: slow-zoom 5s ease-in-out infinite alternate; */
+  animation: slow-zoom 5s ease-in-out;
+}
+
+.parallax {
+  background-image: url("/hero-background.jpg");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+.parallax2 {
+  background-image: url("/hero-background.jpg");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+.parallax3 {
+  background-image: url("/hero-background.jpg");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+.parallax4 {
+  background-image: url("/hero-background.jpg");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+.parallax5 {
+  background-image: url("/hero-background.jpg");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+.text-glow {
+  text-shadow: 0 0 8px rgba(255, 223, 0, 0.8), 0 0 12px rgba(255, 223, 0, 0.6),
+    0 0 16px rgba(255, 223, 0, 0.4);
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+@keyframes pulse-slower {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.6;
+  }
+}
+.animate-pulse-slow {
+  animation: pulse-slow 6s infinite;
+}
+.animate-pulse-slower {
+  animation: pulse-slower 8s infinite;
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+@keyframes pulse-slower {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.6;
+  }
+}
+.animate-pulse-slow {
+  animation: pulse-slow 6s infinite;
+}
+.animate-pulse-slower {
+  animation: pulse-slower 8s infinite;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------
+
+
+
+      <div className="parallax relative w-full h-screen flex flex-col items-center justify-center text-center text-white">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          viewport={{ once: true }}
+          className="relative z-10 px-6"
+        >
+                    {/* Gradient Overlay */}
+
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80 w-full"></div>
+
+
+          {/* Floating Logo */}
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Image
+              src={"/logo.png"}
+              alt="Logo"
+              width={600}
+              height={400}
+              className="mx-auto mb-6 drop-shadow-xl"
+              priority
+            />
+          </motion.div>
+
+          {/* Subtitle */}
+          <p className="mt-4 text-lg sm:text-xl max-w-2xl mx-auto font-body text-yellow-300 drop-shadow-md">
+            Where a new world begins
+          </p>
+
+          {/* Buttons */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
+          >
+            {/* Gradient Filled Button */}
+            {/* <button className="px-8 py-3 rounded-md bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-white font-medium shadow-lg hover:scale-105 hover:brightness-110 transition transform duration-300">
+              Enter The Verse
+            </button> */}
+
+            {/* Gradient Outline Button */}
+            {/* <button className="px-8 py-3 rounded-md border-2 border-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-yellow-400 font-medium bg-transparent hover:text-white hover:bg-gradient-to-r hover:from-yellow-400 hover:via-yellow-500 hover:to-yellow-600 shadow-lg transition transform duration-300">
+              Discover Veyrion
+            </button> */}
+          </motion.div>
+        </motion.div>
+      </div>
