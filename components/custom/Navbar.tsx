@@ -11,6 +11,11 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // simulate login state
 
+  const handleLoginRegister = () => {
+    // Logic to navigate to login/register page
+    window.location.href = "/auth/login"; // Adjust the path as necessary
+  }
+
   return (
     <header
       className="sticky top-0 z-50 w-full 
@@ -200,7 +205,9 @@ export default function Navbar() {
                   </a>
                 )
               )}
-              <Button className="w-full bg-yellow-400 text-black hover:bg-yellow-500 rounded-full font-semibold">
+              <Button className="w-full bg-yellow-400 text-black hover:bg-yellow-500 rounded-full font-semibold"
+              onClick={handleLoginRegister}
+              >
                 Login / Register
               </Button>
               <Button className="w-full bg-yellow-500 text-black hover:bg-yellow-600 rounded-full font-semibold">
