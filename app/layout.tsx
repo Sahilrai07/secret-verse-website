@@ -25,15 +25,27 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isOnloginPage =
+    typeof window !== "undefined" && window.location.pathname === "/login";
+  const isFirstLoad =
+    typeof window !== "undefined" &&
+    window.performance &&
+    window.performance.navigation.type === 1;
+
+  // Show Navbar and Footer only if not on login page and not first load
+  // const showNavbarAndFooter = !isOnloginPage && !isFirstLoad;
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Preloader />
-        <Navbar />
+        {isFirstLoad && <Preloader />}
+
+        {isOnloginPage && <Navbar />}
+
         {children}
-        <Footer />
+        {isOnloginPage && <Footer />}
       </body>
     </html>
   );

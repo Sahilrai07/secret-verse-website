@@ -6,6 +6,7 @@ import { ShoppingCart, User, Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // simulate login state
