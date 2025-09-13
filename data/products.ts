@@ -1,4 +1,5 @@
-export  const artefacts = [
+export const artefacts = {
+  daily: [
     {
       id: 1,
       name: "Harmony Crystal Tumbler",
@@ -6,7 +7,7 @@ export  const artefacts = [
       price: "$24.99",
       impact: "5 trees planted",
       rarity: "Common",
-      image: "/mystical-crystal-tumbler-with-golden-glow.jpg",
+      image: "/p1.jpg",
       description: "Infused with Veyrion's purifying energy",
     },
     {
@@ -16,7 +17,7 @@ export  const artefacts = [
       price: "$18.99",
       impact: "2kg plastic recycled",
       rarity: "Common",
-      image: "/ancient-mystical-notebook-with-green-energy.jpg",
+      image: "/p4.jpg",
       description: "Made from recycled materials blessed by nature spirits",
     },
     {
@@ -26,9 +27,11 @@ export  const artefacts = [
       price: "$32.99",
       impact: "10kg CO₂ offset",
       rarity: "Common",
-      image: "/mystical-green-candle-with-golden-flame.jpg",
+      image: "/p2.jpg",
       description: "Channels the essence of Veyrion's eternal forests",
     },
+  ],
+  rare: [
     {
       id: 4,
       name: "Keeper's Meditation Stone",
@@ -36,7 +39,7 @@ export  const artefacts = [
       price: "$89.99",
       impact: "25 trees planted",
       rarity: "Rare",
-      image: "/ancient-meditation-stone-with-mystical-runes-glowi.jpg",
+      image: "/p3.jpg",
       description: "A sacred stone used by Veyrion's ancient Keepers",
     },
     {
@@ -46,9 +49,11 @@ export  const artefacts = [
       price: "$124.99",
       impact: "50kg plastic recycled",
       rarity: "Rare",
-      image: "/mystical-portal-diffuser-with-swirling-energy.jpg",
+      image: "/p6.jpg",
       description: "Brings the calming energy of interdimensional portals",
     },
+  ],
+  secret: [
     {
       id: 6,
       name: "Mystery Box of Wonders",
@@ -56,7 +61,8 @@ export  const artefacts = [
       price: "$199.99",
       impact: "100 trees + surprise impact",
       rarity: "Legendary",
-      image: "/mysterious-glowing-box-with-ancient-symbols.jpg",
+      image: "/p7.jpg",
       description: "Contains 3-5 rare artefacts chosen by Veyrion's Council",
     },
-  ];
+  ],
+};

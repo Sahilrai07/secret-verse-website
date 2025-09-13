@@ -143,7 +143,7 @@ body {
   @apply bg-background text-foreground font-body;
 }
 
-button {
+/* button {
   background-color: var(--btn-bg);
   color: var(--btn-text);
   border: none;
@@ -154,7 +154,7 @@ button {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
+} */
 
 /* button:hover {
   background-color: var(--btn-bg-hover);
@@ -275,6 +275,23 @@ button {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-display;
   }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1.5s forwards;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 5s linear infinite;
 }

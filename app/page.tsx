@@ -22,15 +22,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { artefacts } from "@/data/products";
+import ProductCard from "@/components/custom/ProductCard";
+import ArtefactJourney from "@/sections/ArtefactJourney";
+import BecomeVendor from "@/sections/BecomeVendor";
+
+type RealmType = "daily" | "rare" | "secret";
 
 const Home = () => {
   const [portalStage, setPortalStage] = useState<
     "runes" | "collapse" | "complete"
   >("runes");
   const [showContent, setShowContent] = useState(false);
-  const [selectedRealm, setSelectedRealm] = useState<
-    "daily" | "rare" | "secret"
-  >("daily");
+  const [selectedRealm, setSelectedRealm] = useState<RealmType>("daily");
   return (
     <div className="w-full">
       {/* Parallax Section 1 */}
@@ -63,24 +66,6 @@ const Home = () => {
           <p className="mt-4 text-lg sm:text-xl max-w-2xl mx-auto font-body text-yellow-300 drop-shadow-md">
             Where a new world begins
           </p>
-
-          {/* Buttons */}
-          {/* <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
-          >
-
-            <button className="px-8 py-3 rounded-md bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-white font-medium shadow-lg hover:scale-105 hover:brightness-110 transition transform duration-300">
-              Enter The Verse
-            </button>
-
-
-            <button className="px-8 py-3 rounded-md border-2 border-yellow-400 text-yellow-400 font-medium bg-transparent hover:text-white hover:bg-gradient-to-r hover:from-yellow-400 hover:via-yellow-500 hover:to-yellow-600 shadow-lg transition transform duration-300">
-              Discover Veyrion
-            </button>
-          </motion.div> */}
         </motion.div>
       </div>
 
@@ -234,220 +219,23 @@ const Home = () => {
             essence of another world.
           </p>
         </motion.div>
-
-        {/* Product Grid */}
-        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-[90%]">
-          {products.map((product, i) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: i * 0.2 }}
-              viewport={{ once: true }}
-              className="relative group"
-            >
-              <Card className="bg-black/60 backdrop-blur-lg border border-yellow-400/30 shadow-2xl rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer overflow-hidden">
-                <div className="relative w-full h-64">
-                  <Image
-                    src={product.image}
-                    alt={product.title}
-                    fill
-                    className="object-cover rounded-t-3xl group-hover:scale-105 transition-transform duration-500"
-                    priority
-                  />
-                  <div className="absolute inset-0 rounded-t-3xl bg-yellow-400/10 blur-2xl opacity-50 group-hover:opacity-70 transition duration-500"></div>
-                </div>
-                <CardContent className="text-center">
-                  <CardHeader>
-                    <CardTitle className="text-xl text-yellow-400 font-display">
-                      {product.title}
-                    </CardTitle>
-                    <CardDescription className="text-gray-200">
-                      {product.description}
-                    </CardDescription>
-                  </CardHeader>
-                </CardContent>
-              </Card>
-            </motion.div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {artefacts[selectedRealm as RealmType].map((artefact) => (
+            <ProductCard
+              artefact={{
+                ...artefact,
+                id: artefact.id.toString(),
+                rarity: artefact.rarity as "Common" | "Rare" | "Legendary",
+              }}
+              key={artefact.id.toString()}
+            />
           ))}
-        </div> */}
+        </div>
       </div>
 
-      <section
-        id="artefacts"
-        className="min-h-screen relative bg-gradient-to-b from-card/20 to-background"
-      >
-        {/* Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-primary/3 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-secondary/3 rounded-full blur-3xl" />
-        </div>
+      <ArtefactJourney />
 
-        <div className="container mx-auto px-4 py-20 relative z-10">
-          {/* Section Header */}
-          <div className="text-center mb-16">
-            <h2 className="font-playfair text-5xl md:text-7xl font-bold text-primary mb-6 rune-glow">
-              Sacred Artefacts
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Discover mystical treasures from Veyrion, each carrying the power
-              to heal our world
-            </p>
-          </div>
-
-          {/* Realm Selector */}
-          <div className="flex justify-center mb-12">
-            <div className="flex bg-card/30 backdrop-blur-sm rounded-lg p-2 border border-primary/20">
-              {[
-                { key: "daily", label: "Daily Artefacts", icon: "◊" },
-                { key: "rare", label: "Rare Artefacts", icon: "◈" },
-                { key: "secret", label: "Secret Box", icon: "◉" },
-              ].map((realm) => (
-                <button
-                  key={realm.key}
-                  onClick={() => setSelectedRealm(realm.key as any)}
-                  className={`px-6 py-3 rounded-md transition-all duration-300 flex items-center gap-2 ${
-                    selectedRealm === realm.key
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                      : "text-muted-foreground hover:text-primary"
-                  }`}
-                >
-                  <span className="text-lg">{realm.icon}</span>
-                  <span className="font-medium">{realm.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Artefacts Grid */}
-          {/* <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {artefacts[selectedRealm].map((artefact) => (
-              <Card
-                key={artefact.id}
-                className="group bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-all duration-500 overflow-hidden hover:shadow-2xl hover:shadow-primary/10"
-              >
-                <div className="relative overflow-hidden">
-                  <Image
-                    src={artefact.image || "/placeholder.svg"}
-                    alt={artefact.name}
-                    className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
-
-=
-                  <Badge
-                    className={`absolute top-4 right-4 ${
-                      artefact.rarity === "Legendary"
-                        ? "bg-primary text-primary-foreground"
-                        : artefact.rarity === "Rare"
-                        ? "bg-secondary text-secondary-foreground"
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {artefact.rarity}
-                  </Badge>
-
-
-                  <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                </div>
-
-                <div className="p-6">
-                  <div className="mb-4">
-                    <h3 className="font-playfair text-xl font-bold text-primary mb-2 group-hover:rune-glow transition-all duration-300">
-                      {artefact.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {artefact.description}
-                    </p>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-secondary font-medium">
-                        {artefact.impact}
-                      </span>
-                      <span className="text-muted-foreground">
-                        {artefact.realm}
-                      </span>
-                    </div>
-                  </div>
-
-              
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-primary">
-                      {artefact.price}
-                    </span>
-                    <Button
-                      size="sm"
-                      className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg shadow-secondary/25 hover:shadow-secondary/40 transition-all duration-300"
-                    >
-                      Acquire
-                    </Button>
-                  </div>
-                </div>
-=
-                <div className="absolute inset-0 border-2 border-primary/0 group-hover:border-primary/30 rounded-lg transition-all duration-500 pointer-events-none" />
-              </Card>
-            ))}
-          </div> */}
-
-          {/* How It Works Section */}
-          <div className="text-center mb-16">
-            <h3 className="font-playfair text-3xl text-primary mb-8">
-              The Artefact Journey
-            </h3>
-            <div className="grid md:grid-cols-4 gap-6">
-              {[
-                {
-                  step: "1",
-                  title: "Choose Your Realm",
-                  desc: "Select from Daily, Rare, or Secret artefacts",
-                  icon: "◊",
-                },
-                {
-                  step: "2",
-                  title: "Feel the Energy",
-                  desc: "Each artefact resonates with Veyrion's power",
-                  icon: "✨",
-                },
-                {
-                  step: "3",
-                  title: "Acquire & Impact",
-                  desc: "Your purchase creates real environmental change",
-                  icon: "🌱",
-                },
-                {
-                  step: "4",
-                  title: "Gain Verse Energy",
-                  desc: "Unlock mysteries and deeper connections",
-                  icon: "⚡",
-                },
-              ].map((item, i) => (
-                <div key={i} className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-primary/20 rounded-full flex items-center justify-center border-2 border-primary/30">
-                    <span className="text-2xl">{item.icon}</span>
-                  </div>
-                  <h4 className="font-playfair text-lg text-primary mb-2">
-                    {item.title}
-                  </h4>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Call to Action */}
-          <div className="text-center">
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground px-12 py-4 text-lg font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300"
-              onClick={() => (window.location.href = "/impact")}
-            >
-              Explore All Realms
-            </Button>
-            <p className="mt-4 text-sm text-muted-foreground font-mono">
-              ◊ Each Artefact Tells a Story ◊
-            </p>
-          </div>
-        </div>
-      </section>
+      <BecomeVendor/>
 
       {/* Eco Impact */}
       <div className="parallax5 relative h-screen flex items-center justify-center overflow-hidden px-6">
@@ -463,7 +251,7 @@ const Home = () => {
           className="relative z-10 max-w-6xl w-full text-center"
         >
           {/* Heading */}
-          <h2 className="text-5xl font-display font-extrabold text-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 mb-12 drop-shadow-xl">
+          <h2 className="text-5xl font-display font-extrabold text-yellow-400 mb-12 drop-shadow-xl">
             Your Eco Impact
           </h2>
 
@@ -480,7 +268,9 @@ const Home = () => {
               <div className="absolute -inset-4 bg-yellow-400/20 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity duration-300"></div>
 
               <Trees className="w-14 h-14 text-green-400 mb-4 z-10 relative animate-bounce-slow" />
-              <span className="text-3xl font-bold z-10 relative">12,340</span>
+              <span className="text-3xl font-bold z-10 relative text-yellow-500">
+                12,340
+              </span>
               <span className="text-gray-200 z-10 relative mt-1">
                 Trees Planted
               </span>
@@ -496,7 +286,9 @@ const Home = () => {
               <div className="absolute -inset-4 bg-blue-400/20 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity duration-300"></div>
 
               <Recycle className="w-14 h-14 text-blue-400 mb-4 z-10 relative animate-bounce-slow" />
-              <span className="text-3xl font-bold z-10 relative">4,500kg</span>
+              <span className="text-3xl font-bold z-10 relative text-blue-400">
+                4,500kg
+              </span>
               <span className="text-gray-200 z-10 relative mt-1">
                 Plastic Recycled
               </span>
@@ -512,7 +304,9 @@ const Home = () => {
               <div className="absolute -inset-4 bg-teal-400/20 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity duration-300"></div>
 
               <Globe className="w-14 h-14 text-teal-400 mb-4 z-10 relative animate-bounce-slow" />
-              <span className="text-3xl font-bold z-10 relative">2,900kg</span>
+              <span className="text-3xl font-bold z-10 relative text-teal-400">
+                2,900kg
+              </span>
               <span className="text-gray-200 z-10 relative mt-1">
                 Carbon Saved
               </span>
@@ -521,12 +315,7 @@ const Home = () => {
         </motion.div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-black text-white py-10 text-center border-t border-yellow-500/30">
-        <p className="text-yellow-400 font-display">
-          The Secret Verse – Where Commerce Meets Consciousness
-        </p>
-      </footer>
+
     </div>
   );
 };
