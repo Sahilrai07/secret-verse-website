@@ -129,7 +129,9 @@ export default function Navbar() {
             </>
           ) : (
             <div className="hidden md:flex gap-3">
-              <Button className="bg-yellow-400 text-black hover:bg-yellow-500 rounded-full px-6 py-2 font-semibold shadow-md shadow-yellow-500/20">
+              <Button className="bg-yellow-400 text-black hover:bg-yellow-500 rounded-full px-6 py-2 font-semibold shadow-md shadow-yellow-500/20"
+                            onClick={handleLoginRegister}
+              >
                 Login / Register
               </Button>
               <Button className="bg-yellow-500 text-black hover:bg-yellow-600 rounded-full px-6 py-2 font-semibold shadow-md shadow-yellow-500/30">
