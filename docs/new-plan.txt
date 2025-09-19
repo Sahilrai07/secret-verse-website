@@ -1,0 +1,101 @@
+
+frontend -> user / buyers
+
+-> landing Page
+-> Products Page
+-> Products Detail Page
+-> Cart page / slider
+-> Profile Page
+-> Order Page
+-> About Us Page
+-> Pricy and Policy Page
+-> Forgot Password System
+-> Login And Register Page
+
+
+
+Frontend Vendor 
+
+-> Login And Register ??? 
+-> Dashboard Page 
+-> Product Page 
+-> Orders Page
+-> Payment Page
+-> Notification Panel Page
+
+
+
+Frontend Admin
+
+-> Login And Register ??? 
+-> Dashboard Page 
+-> Product Page 
+-> Orders Page
+-> Payment Page
+-> Notification Panel Page
+-> Users Page
+-> Vendors Page
+-> Admin Pages
+-> Web Manage Page
+
+
+
+Website Systems
+____________________
+
+
+-> auth System for all users
+-> Products System
+-> Orders Management System
+-> User Management System
+-> Notifications management system
+-> And Some Small system for small works
+-> Box *(Tickets) System for lottery (Paise lena : 😭) 
+-> Payment System For vendors and Admins
+
+----------------------
+-> Ready Backend 
+----------------------
+
+-> Admin Products management (done)
+-> All Users Management System ( Done)
+-> Vendor Products Management (Done)
+
+
+
+----------------------
+Reminding Works
+-----------------------
+
+-> Re Build of Auth System ( NextAuth.js Maybe) 
+-> Payment System ( Main Kaam )
+-> Notifications management system
+-> Box *(Tickets) System for lottery (Paise lena : 😭) 
+-> Web Page Management System
+-> Orders Management System
+
+
+
+Deadline -> 15 / 09 / 2025 (user Frontend)
+
+Whole Website -> 22 / 09 / 2025 ( without any delay 😭)
+backup date -> 25 / 09 / 2025
+backup ka backup -> 27 / 09 / 2025 
+ye Sala Final Hai -> 29 / 09 / 2025
+
+
+for Testing -> 1 week OR 4 Days 
+
+Ye Final Date : -> next 10 / 10 / 2025
+
+
+
+ 
+
+
+
+
+
+
+
+
