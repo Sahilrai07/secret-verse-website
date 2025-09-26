@@ -43,7 +43,7 @@ export default function Footer() {
             Quick Links
           </h3>
           <ul className="space-y-2">
-            {["Shop", "Categories", "Deals", "About", "Contact"].map(
+            {["Shop", "Categories", "Deals", "About", "Contact","Admin"].map(
               (item, i) => (
                 <li key={i}>
                   <a

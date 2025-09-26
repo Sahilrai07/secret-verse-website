@@ -2,7 +2,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import LayoutWrapper from "@/components/custom/LayoutWrapper";
+import { Toaster } from "@/components/ui/sonner";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,12 +25,29 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <LayoutWrapper>{children}</LayoutWrapper>
+        {/* 🎉 Custom golden-black toast theme */}
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#000", // black bg
+              color: "#FFD700", // golden text
+              border: "1px solid #FFD700",
+              fontWeight: "600",
+              borderRadius: "12px",
+            },
+            className: "shadow-lg",
+          }}
+        />
+
+        {children}
       </body>
     </html>
   );

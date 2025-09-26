@@ -1,134 +1,251 @@
 "use client";
-
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { FcGoogle } from "react-icons/fc";
+import { signIn } from "next-auth/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
 import {
-  Card,
-  CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
+  CardContent,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { FcGoogle } from "react-icons/fc";
+import { Eye, EyeOff } from "lucide-react";
+
+const LoginSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(128),
+  acceptTerms: z.literal(true, {
+    errorMap: () => ({ message: "You must accept the Terms & Privacy Policy" }),
+  }),
+});
+
+type LoginFormValues = z.infer<typeof LoginSchema>;
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: { email: "", password: "", acceptTerms: true },
+  });
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log({ email, password });
-  };
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleGoogleLogin = () => {
-    console.log("Google login clicked");
-    // You’ll later integrate with Google Auth here
+  const onSubmit = async (data: LoginFormValues) => {
+    // signIn returns a Promise that resolves to an object (or undefined)
+    // Using redirect: false to handle errors client-side
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
+
+    if (result?.error) {
+      // show a generic error under the form (or set field errors via setError)
+      setError("password", {
+        type: "server",
+        message: "Invalid email or password",
+      });
+      toast.error("Login failed. Please check your credentials and try again.");
+      return;
+    }
+    toast.success("Welcome back! You've successfully logged in.");
+
+    // success: navigate to dashboard (or you can use router.push)
+    window.location.href = "/dashboard";
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
-      style={{
-        backgroundImage:
-          "url('/hero-background.jpg')", // 👉 use your background image here
-      }}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full max-w-md mx-auto"
     >
-      {/* Overlay */}
-      {/* <div className="absolute inset-0 bg-black/60"></div> */}
+      {/* Header */}
+      <CardHeader className="text-center space-y-2 pb-6">
+        <CardTitle className="text-3xl md:text-4xl font-playfair text-yellow-400">
+          Welcome Back
+        </CardTitle>
+        <CardDescription className="text-gray-300">
+          Sign in to continue your journey
+        </CardDescription>
+      </CardHeader>
 
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="relative z-10 w-full max-w-md"
-      >
-        <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}>
-          <Card className="bg-gray-900/40 backdrop-blur-xl shadow-2xl rounded-2xl border border-gray-700/30">
-            <CardHeader className="text-center">
-              <CardTitle className="text-4xl font-playfair text-yellow-400">
-                Welcome Back
-              </CardTitle>
-              <CardDescription className="text-gray-300 mt-2">
-                Login to continue to Secret Verse
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent>
-              <form className="space-y-6" onSubmit={handleLogin}>
-                <div>
-                  <Label htmlFor="email" className="text-gray-300">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="mt-1 bg-black/40 text-white border-gray-600 focus:border-yellow-400 focus:ring-yellow-400"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="password" className="text-gray-300">
-                    Password
-                  </Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="********"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1 bg-black/40 text-white border-gray-600 focus:border-yellow-400 focus:ring-yellow-400"
-                    required
-                  />
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <a
-                    href="/forgot-password"
-                    className="text-sm text-yellow-400 hover:underline"
-                  >
-                    Forgot Password?
-                  </a>
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full bg-yellow-400 text-black hover:bg-yellow-500 rounded-full py-3 font-semibold shadow-lg shadow-yellow-500/40 transition-all duration-300"
-                >
-                  Login
-                </Button>
-
-                {/* Google Button */}
-                <Button
-                  type="button"
-                  onClick={handleGoogleLogin}
-                  variant="outline"
-                  className="w-full flex items-center justify-center gap-2 border-gray-500 text-gray-200 hover:text-white  bg-black/40 hover:bg-gray-800 rounded-full py-3 transition-all duration-300"
-                >
-                  <FcGoogle className="text-xl" />
-                  Continue with Google
-                </Button>
-              </form>
-
-              <p className="text-center text-gray-400 mt-6 text-sm">
-                Don’t have an account?{" "}
-                <a
-                  href="/auth/register"
-                  className="text-yellow-400 hover:underline font-medium"
-                >
-                  Register here
-                </a>
+      {/* Form */}
+      <CardContent className="space-y-6">
+        <form
+          className="space-y-6"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          aria-describedby="login-form-errors"
+        >
+          {/* Email */}
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-gray-300 text-sm">
+              Email
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              {...register("email")}
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
+              className="bg-black/40 text-white border-gray-600 focus:border-yellow-400 focus:ring-yellow-400"
+            />
+            {errors.email && (
+              <p id="email-error" className="text-red-400 text-sm mt-1">
+                {errors.email.message}
               </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </motion.div>
-    </div>
+            )}
+          </div>
+
+          {/* Password */}
+          <div className="space-y-2 relative">
+            <Label
+              htmlFor="password"
+              className={`text-sm ${
+                errors.password ? "text-red-400" : "text-gray-300"
+              }`}
+            >
+              Password
+            </Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                {...register("password")}
+                aria-invalid={!!errors.password}
+                className={`bg-black/40 text-white pr-10 border ${
+                  errors.password
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                    : "border-gray-600 focus:border-yellow-400 focus:ring-yellow-400"
+                }`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-yellow-400 transition"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-red-400 text-sm mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* Terms & Policy */}
+          <div className="flex items-start gap-2">
+            <Input
+              id="terms"
+              type="checkbox"
+              {...register("acceptTerms")}
+              aria-invalid={!!errors.acceptTerms}
+              className="mt-1 w-4 h-4 text-yellow-400 bg-black/40 border-gray-600 rounded focus:ring-yellow-400"
+            />
+            <div className="text-sm text-gray-400">
+              <Label htmlFor="terms" className="cursor-pointer">
+                I agree to the{" "}
+                <a href="/terms" className="text-yellow-400 hover:underline">
+                  Terms
+                </a>{" "}
+                &{" "}
+                <a href="/privacy" className="text-yellow-400 hover:underline">
+                  Privacy Policy
+                </a>
+              </Label>
+              {errors.acceptTerms && (
+                <p className="text-red-400 text-xs mt-1">
+                  {errors.acceptTerms.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Forgot Password */}
+          <div className="flex justify-end">
+            <a
+              href="/auth/forgot-password"
+              className="text-sm text-yellow-400 hover:underline"
+            >
+              Forgot Password?
+            </a>
+          </div>
+
+          {/* Login Button */}
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-yellow-400 text-black hover:bg-yellow-500 rounded-full py-3 font-semibold shadow-lg shadow-yellow-500/40 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+            aria-busy={isSubmitting}
+          >
+            {isSubmitting ? "Logging in..." : "Login"}
+          </Button>
+        </form>
+
+        {/* Divider */}
+        <div className="relative flex items-center justify-center my-4">
+          <div className="absolute w-full h-px bg-gray-700"></div>
+          <span className="relative bg-gray-900/40 px-3 text-gray-400 text-sm">
+            OR
+          </span>
+        </div>
+
+        {/* Google Button */}
+        <Button
+          type="button"
+          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+          variant="outline"
+          className="w-full flex items-center justify-center gap-2 border-gray-600 text-gray-200 hover:text-white bg-black/40 hover:bg-gray-800 rounded-full py-3 transition-all duration-300"
+        >
+          <FcGoogle className="text-xl" />
+          Continue with Google
+        </Button>
+
+        {/* Register Link */}
+        <p className="text-center text-gray-400 mt-6 text-sm">
+          Don’t have an account?{" "}
+          <a
+            href="/auth/register"
+            className="text-yellow-400 hover:underline font-medium"
+          >
+            Register here
+          </a>
+        </p>
+
+        {/* Bottom Text */}
+        <p className="text-center text-xs text-gray-500 mt-8">
+          By signing in, you agree to our{" "}
+          <a href="/terms" className="text-yellow-400 hover:underline">
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a href="/privacy" className="text-yellow-400 hover:underline">
+            Privacy Policy
+          </a>
+          . <br />© {new Date().getFullYear()} Secret Verse. All rights
+          reserved.
+        </p>
+      </CardContent>
+    </motion.div>
   );
 }
