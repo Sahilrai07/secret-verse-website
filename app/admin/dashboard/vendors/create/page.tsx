@@ -20,7 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { createAdminVendor } from "@/app/actions/creaateAdminActionts";
+import { createAdminVendor } from "@/actions/admin/creaateAdminActionts";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { adminVendorSchema } from "@/lib/zodSchemas";

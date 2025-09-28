@@ -25,7 +25,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { editVendorById } from "@/app/actions/creaateAdminActionts";
+import { editVendorById } from "@/actions/admin/creaateAdminActionts";
 
 interface IEditProps {
   data: {

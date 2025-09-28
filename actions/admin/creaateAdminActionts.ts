@@ -32,7 +32,7 @@ export const createAdnin = async (prevState: unknown, formData: FormData) => {
     data: {
       name: submission.value.name,
       email: submission.value.email,
-      phone: Number(submission.value.phone),
+      phone: String(submission.value.phone),
       password: hashedPassword,
       lastLogin: new Date(),
       //   role: "SUPERADMIN",
@@ -71,7 +71,7 @@ export const createAdminVendor = async (
     data: {
       name: submission.value.name,
       email: submission.value.email,
-      phone: Number(submission.value.phone),
+      phone: String(submission.value.phone),
       password: hashedPassword,
       address: submission.value.address,
       city: submission.value.city,

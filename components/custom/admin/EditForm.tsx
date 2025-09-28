@@ -1,6 +1,6 @@
 "use client";
 
-import {  editProductById } from "@/app/actions/productActions";
+import {  editProductById } from "@/actions/admin/productActions";
 import { Button } from "@/components/ui/button";
 import {
   Card,

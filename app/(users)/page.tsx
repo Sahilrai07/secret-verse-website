@@ -12,15 +12,6 @@ import {
   Globe,
 } from "lucide-react";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { artefacts } from "@/data/products";
 import ProductCard from "@/components/custom/ProductCard";
 import ArtefactJourney from "@/sections/ArtefactJourney";
@@ -29,9 +20,7 @@ import BecomeVendor from "@/sections/BecomeVendor";
 type RealmType = "daily" | "rare" | "secret";
 
 const Home = () => {
-  const [portalStage, setPortalStage] = useState<
-    "runes" | "collapse" | "complete"
-  >("runes");
+
   const [showContent, setShowContent] = useState(false);
   const [selectedRealm, setSelectedRealm] = useState<RealmType>("daily");
   return (

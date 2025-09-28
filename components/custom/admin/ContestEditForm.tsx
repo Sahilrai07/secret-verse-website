@@ -1,6 +1,6 @@
 "use client";
 
-import { editContestById } from "@/app/actions/productActions";
+import { editContestById } from "@/actions/admin/productActions";
 import { Button } from "@/components/ui/button";
 import { ContestStatus, ContestTimeType } from "@/lib/generated/prisma";
 import {

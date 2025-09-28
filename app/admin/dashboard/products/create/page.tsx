@@ -1,6 +1,6 @@
 "use client";
 
-import { createProduct } from "@/app/actions/productActions";
+import { createProduct } from "@/actions/admin/productActions";
 import { Button } from "@/components/ui/button";
 import {
   Card,

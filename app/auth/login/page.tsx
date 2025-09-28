@@ -18,17 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
+import { LoginSchema } from "@/schema";
 
-const LoginSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(128),
-  acceptTerms: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the Terms & Privacy Policy" }),
-  }),
-});
 
 type LoginFormValues = z.infer<typeof LoginSchema>;
 
@@ -40,7 +31,7 @@ export default function LoginPage() {
     setError,
   } = useForm<LoginFormValues>({
     resolver: zodResolver(LoginSchema),
-    defaultValues: { email: "", password: "", acceptTerms: true },
+    defaultValues: { email: "", password: ""},
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -66,7 +57,7 @@ export default function LoginPage() {
     toast.success("Welcome back! You've successfully logged in.");
 
     // success: navigate to dashboard (or you can use router.push)
-    window.location.href = "/dashboard";
+    window.location.href = "/";
   };
 
   return (
@@ -158,8 +149,6 @@ export default function LoginPage() {
             <Input
               id="terms"
               type="checkbox"
-              {...register("acceptTerms")}
-              aria-invalid={!!errors.acceptTerms}
               className="mt-1 w-4 h-4 text-yellow-400 bg-black/40 border-gray-600 rounded focus:ring-yellow-400"
             />
             <div className="text-sm text-gray-400">
@@ -173,11 +162,6 @@ export default function LoginPage() {
                   Privacy Policy
                 </a>
               </Label>
-              {errors.acceptTerms && (
-                <p className="text-red-400 text-xs mt-1">
-                  {errors.acceptTerms.message}
-                </p>
-              )}
             </div>
           </div>
 
@@ -213,7 +197,7 @@ export default function LoginPage() {
         {/* Google Button */}
         <Button
           type="button"
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+          onClick={() => signIn("google", { callbackUrl: "/" })}
           variant="outline"
           className="w-full flex items-center justify-center gap-2 border-gray-600 text-gray-200 hover:text-white bg-black/40 hover:bg-gray-800 rounded-full py-3 transition-all duration-300"
         >

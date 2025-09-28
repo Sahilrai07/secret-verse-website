@@ -1,6 +1,6 @@
 "use client";
 
-import { createAdnin } from "@/app/actions/creaateAdminActionts";
+import { createAdnin } from "@/actions/admin/creaateAdminActionts";
 import { Button } from "@/components/ui/button";
 import {
   Card,

@@ -16,19 +16,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
+import { RegisterSchema } from "@/schema";
+import { toast } from "sonner";
+import { userRegister } from "@/actions/users/userAuthActions";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
-// ✅ Zod schema for validation
-const RegisterSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(128),
-  acceptTerms: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the Terms & Privacy Policy" }),
-  }),
-});
 
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
 
@@ -41,16 +34,26 @@ export default function RegisterPage() {
     resolver: zodResolver(RegisterSchema),
     defaultValues: { name: "", email: "", password: "", acceptTerms: true },
   });
+  const router = useRouter();
 
   const onSubmit = async (data: RegisterFormValues) => {
-    console.log("Register form submitted:", data);
-    // TODO: integrate API call for registration
+    try {
+      const result = await userRegister(data);
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(
+          "Account created successfully! Please verify your email."
+        );
+        // redirect to verify page
+        router.push("/auth/verify-email");
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred. Please try again.");
+      console.error("Registration error:", error);
+    }
   };
 
-  const handleGoogleRegister = () => {
-    console.log("Google register clicked");
-    // TODO: integrate Google signup with next-auth or backend
-  };
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -204,7 +207,7 @@ export default function RegisterPage() {
         {/* Google Button */}
         <Button
           type="button"
-          onClick={handleGoogleRegister}
+          onClick={() => signIn("google", { callbackUrl: "/" })}
           variant="outline"
           className="w-full flex items-center justify-center gap-2 border-gray-600 text-gray-200 hover:text-white bg-black/40 hover:bg-gray-800 rounded-full py-3 transition-all duration-300"
         >

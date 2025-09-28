@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -25,8 +24,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-
   return (
     <html lang="en">
       <body
@@ -34,12 +31,11 @@ export default function RootLayout({
       >
         {/* 🎉 Custom golden-black toast theme */}
         <Toaster
-          position="top-center"
           toastOptions={{
             style: {
-              background: "#000", // black bg
-              color: "#FFD700", // golden text
-              border: "1px solid #FFD700",
+              background: "#FFD700", // golden background
+              color: "#000000", // black text
+              border: "1px solid #000000",
               fontWeight: "600",
               borderRadius: "12px",
             },

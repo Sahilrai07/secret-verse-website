@@ -1,5 +1,5 @@
 "use client";
-import { createContest } from "@/app/actions/productActions";
+import { createContest } from "@/actions/admin/productActions";
 import { Button } from "@/components/ui/button";
 import {
   contestSchema,
