@@ -1,0 +1,18 @@
+/*
+  Warnings:
+
+  - A unique constraint covering the columns `[email,token]` on the table `VerificationToken` will be added. If there are existing duplicate values, this will fail.
+  - Added the required column `email` to the `VerificationToken` table without a default value. This is not possible if the table is not empty.
+  - The required column `id` was added to the `VerificationToken` table with a prisma-level default value. This is not possible if the table is not empty. Please add this column as optional, then populate it before making it required.
+
+*/
+-- DropIndex
+DROP INDEX "public"."VerificationToken_identifier_token_key";
+
+-- AlterTable
+ALTER TABLE "public"."VerificationToken" ADD COLUMN     "email" TEXT NOT NULL,
+ADD COLUMN     "id" TEXT NOT NULL,
+ADD CONSTRAINT "VerificationToken_pkey" PRIMARY KEY ("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "VerificationToken_email_token_key" ON "public"."VerificationToken"("email", "token");

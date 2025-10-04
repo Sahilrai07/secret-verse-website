@@ -12,16 +12,24 @@ declare module "next-auth" {
   interface User {
     id: string;
     role?: string;
+    isVerified?: boolean;
+    emailVerified?: Date | null;
   }
+
   interface Session {
     user: {
       id: string;
       role?: string;
+      isVerified?: boolean;
+      emailVerified?: Date | null;
     } & DefaultSession["user"];
   }
+
   interface JWT {
     id?: string;
     role?: string;
+    isVerified?: boolean;
+    emailVerified?: Date | null;
   }
 }
 
@@ -57,13 +65,15 @@ const authConfig: NextAuthConfig = {
           name: user.name,
           email: user.email,
           role: user.role || "USER",
+          isVerified: user.isVerified,
+          emailVerified: user.emailVerified,
         };
       },
     }),
   ],
 
   events: {
-    // ensure any OAuth user is set as verified
+    // ✅ Ensure any OAuth user is verified
     async linkAccount({ user }) {
       await prisma.user.update({
         where: { id: user.id },
@@ -76,7 +86,7 @@ const authConfig: NextAuthConfig = {
     async signIn({ user, account }) {
       const existingUser = await getUserById(user.id);
 
-      // ✅ For OAuth users: always mark verified immediately
+      // ✅ OAuth users → always verified
       if (account?.provider !== "credentials") {
         if (existingUser && !existingUser.isVerified) {
           await prisma.user.update({
@@ -87,10 +97,13 @@ const authConfig: NextAuthConfig = {
         return true;
       }
 
-      // ✅ For credentials: require verified
-      if (!existingUser || !existingUser.isVerified) {
-        return false;
-      }
+      // ✅ Credentials users → require verified email
+      // if (!existingUser?.emailVerified) {
+      //   return "/auth/verify-email";
+      // }
+      // if (!existingUser.isVerified) {
+      //   return false;
+      // }
 
       return true;
     },
@@ -99,6 +112,8 @@ const authConfig: NextAuthConfig = {
       if (user) {
         token.id = user.id;
         token.role = user.role || "USER";
+        token.isVerified = user.isVerified ?? false;
+        token.emailVerified = user.emailVerified ?? null;
       }
       return token;
     },
@@ -107,6 +122,8 @@ const authConfig: NextAuthConfig = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.isVerified = token.isVerified as boolean;
+        session.user.emailVerified = token.emailVerified as Date | null;
       }
       return session;
     },

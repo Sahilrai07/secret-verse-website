@@ -7,6 +7,8 @@ import { prisma } from "@/lib/prisma";
 import { getUserByEmail } from "@/data/user";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import { generateVerificationToken } from "@/lib/token";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const userRegister = async (values: z.infer<typeof RegisterSchema>) => {
   try {
@@ -34,7 +36,16 @@ export const userRegister = async (values: z.infer<typeof RegisterSchema>) => {
     });
 
     // TODO: Send verification email
-    return { success: "User created successfully" };
+
+    const verifciationToken = await generateVerificationToken(email);
+    // console.log("Verification Token:", verifciationToken);
+
+    await sendVerificationEmail(
+      verifciationToken.email,
+      verifciationToken.token
+    );
+
+    return { success: "Registration successful. Please verify your email." };
   } catch (error) {
     console.error("Registration error:", error);
     return { error: "Something went wrong" };
@@ -54,6 +65,13 @@ export const userLogin = async (values: z.infer<typeof LoginSchema>) => {
     const user = await getUserByEmail(email);
     if (!user) {
       return { error: "User not found" };
+    }
+
+    const isVerifed = user.emailVerified || user.isVerified;
+    if (!isVerifed) {
+      return {
+        error: "Please verify your email to login",
+      };
     }
 
     await signIn("credentials", { email, password, redirectTo: "/" });
