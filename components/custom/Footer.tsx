@@ -17,11 +17,10 @@ export default function Footer() {
         >
           <div className="flex items-center gap-2">
             <Image
-              src="/circle1.png" // replace with your actual logo path
+              src="/circle1.png"
               alt="Secret Verser Logo"
-            //   className="w-10 h-10 rounded-full"
-                width={40}
-                height={40}
+              width={40}
+              height={40}
             />
             <h2 className="text-2xl font-bold text-yellow-400 font-playfair">
               Secret Verser
@@ -43,18 +42,25 @@ export default function Footer() {
             Quick Links
           </h3>
           <ul className="space-y-2">
-            {["Shop", "Categories", "Deals", "About", "Contact","Admin"].map(
-              (item, i) => (
-                <li key={i}>
-                  <a
-                    href={`/${item.toLowerCase()}`}
-                    className="hover:text-yellow-400 transition-colors"
-                  >
-                    {item}
-                  </a>
-                </li>
-              )
-            )}
+            {["Shop", "Categories", "Deals", "About", "Contact"].map((item, i) => (
+              <li key={i}>
+                <a
+                  href={`/${item.toLowerCase()}`}
+                  className="hover:text-yellow-400 transition-colors"
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+            {/* Admin Login Link */}
+            <li>
+              <a
+                href="/auth/admin/login"
+                className="hover:text-yellow-400 transition-colors"
+              >
+                Admin Login
+              </a>
+            </li>
           </ul>
         </motion.div>
 
