@@ -4,26 +4,20 @@ import { notFound } from "next/navigation";
 
 const getProductDataById = async (productId: string) => {
   const data = await prisma?.product.findUnique({
-    where: {
-      id: productId,
-    },
+    where: { id: productId },
   });
 
-  if (!data) {
-    return notFound();
-  }
-
+  if (!data) return notFound();
   return data;
 };
 
-const EditRoute = async ({ params }: { params: { id: string } }) => {
-  const productData = await getProductDataById(params.id);
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-  return (
-    <>
-      <EditForm data={productData} />
-    </>
-  );
-};
+export default async function EditRoute({ params }: PageProps) {
+  const { id } = await params;
+  const productData = await getProductDataById(id);
 
-export default EditRoute;
+  return <EditForm data={productData} />;
+}
