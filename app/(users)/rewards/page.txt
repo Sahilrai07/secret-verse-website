@@ -1,0 +1,133 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+const rewardsPool = [
+  { name: "Golden Relic", rarity: "Legendary", image: "/reward1.png" },
+  { name: "Mystic Orb", rarity: "Rare", image: "/reward2.png" },
+  { name: "Ancient Scroll", rarity: "Common", image: "/reward3.png" },
+  { name: "Divine Crystal", rarity: "Legendary", image: "/reward4.png" },
+  { name: "Secret Token", rarity: "Epic", image: "/reward5.png" },
+];
+
+export default function BoxOpeningPage() {
+  const [stage, setStage] = useState<"opening" | "revealing" | "done">("opening");
+  const [reward, setReward] = useState<typeof rewardsPool[0] | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const timer1 = setTimeout(() => setStage("revealing"), 3000);
+    const timer2 = setTimeout(() => {
+      const randomReward = rewardsPool[Math.floor(Math.random() * rewardsPool.length)];
+      setReward(randomReward);
+      setStage("done");
+    }, 6000);
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white flex flex-col items-center justify-center relative overflow-hidden">
+      {/* Background sparkles */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,215,0,0.05),_transparent_70%)] animate-pulse" />
+
+      {stage === "opening" && (
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: [0.8, 1.1, 1], opacity: 1 }}
+          transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+          className="text-center"
+        >
+          <motion.div
+            animate={{ rotate: [0, 10, -10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="flex justify-center"
+          >
+            <Image
+              src="/box-glow.png"
+              alt="Opening Box"
+              width={300}
+              height={300}
+              className="drop-shadow-[0_0_20px_rgba(255,215,0,0.6)]"
+            />
+          </motion.div>
+          <p className="mt-6 text-yellow-400 text-xl font-semibold animate-pulse">
+            Opening your box...
+          </p>
+        </motion.div>
+      )}
+
+      {stage === "revealing" && (
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <div className="relative flex justify-center">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: [0, 1.2, 1], rotate: [0, 360] }}
+              transition={{ duration: 2, ease: "easeOut" }}
+              className="w-64 h-64 bg-yellow-400/20 rounded-full blur-3xl absolute"
+            />
+            <Image
+              src="/box-explode.png"
+              alt="Box Exploding"
+              width={300}
+              height={300}
+              className="z-10"
+            />
+          </div>
+          <p className="mt-8 text-yellow-300 text-2xl font-bold">
+            The box bursts open...
+          </p>
+        </motion.div>
+      )}
+
+      {stage === "done" && reward && (
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-center"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: [0, 1.2, 1] }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="relative inline-block"
+          >
+            <div className="absolute inset-0 rounded-full bg-yellow-400/20 blur-3xl" />
+            <Image
+              src={reward.image}
+              alt={reward.name}
+              width={250}
+              height={250}
+              className="relative z-10 mx-auto drop-shadow-[0_0_20px_rgba(255,215,0,0.8)]"
+            />
+          </motion.div>
+
+          <h1 className="mt-8 text-4xl font-display text-yellow-400">
+            {reward.name}
+          </h1>
+          <p className="text-gray-300 mt-2 text-lg italic">
+            Rarity: <span className="text-yellow-300">{reward.rarity}</span>
+          </p>
+
+          <Button
+            onClick={() => router.push("/products")}
+            className="mt-10 bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition-all"
+          >
+            Continue
+          </Button>
+        </motion.div>
+      )}
+    </div>
+  );
+}

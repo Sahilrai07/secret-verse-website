@@ -50,7 +50,7 @@ export default function NavbarClient({ session }: { session: Session | null }) {
               ))}
             </>
           ) : (
-            ["Home", "Shop", "Categories", "Deals", "Contact"].map((item) => (
+            ["Home", "Products", "Categories", "Deals", "Contact"].map((item) => (
               <motion.a
                 key={item}
                 href={`/${item.toLowerCase()}`}
@@ -152,7 +152,7 @@ export default function NavbarClient({ session }: { session: Session | null }) {
             </>
           ) : (
             <>
-              {["Home", "Shop", "Categories", "Deals", "Contact"].map(
+              {["Home", "Products", "Categories", "Deals", "Contact"].map(
                 (item) => (
                   <a
                     key={item}

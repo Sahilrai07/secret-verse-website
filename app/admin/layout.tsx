@@ -7,12 +7,12 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="w-full flex h-screen overflow-hidden">
       <SidebarProvider
-        style={
-          {
-            "--sidebar-width": "calc(var(--spacing) * 72)",
-            "--header-height": "calc(var(--spacing) * 12)",
-          } as React.CSSProperties
-        }
+     style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
       >
         <AppSidebar variant="inset" />
         <SidebarInset>
