@@ -496,7 +496,7 @@ export default function BuyTicketsPage() {
                 <div className="flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 text-blue-400 mt-0.5" />
                   <div className="text-blue-300 text-sm">
-                    Tickets will be automatically assigned to the selected users' accounts
+                    Tickets will be automatically assigned to the selected users accounts
                   </div>
                 </div>
               </div>

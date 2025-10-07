@@ -93,7 +93,7 @@ export default function ResultCard({ result, contestName }: ResultCardProps) {
               <div className="text-5xl font-bold">₹{result.amount}</div>
             </motion.div>
 
-            <p className="text-white text-lg mb-6">Amazing! You've won a cash prize in {contestName}!</p>
+            <p className="text-white text-lg mb-6">Amazing! You&apos;ve won a cash prize in {contestName}!</p>
           </>
         ) : (
           <>

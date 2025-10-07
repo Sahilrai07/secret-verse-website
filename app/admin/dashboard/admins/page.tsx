@@ -75,7 +75,7 @@ const AdminDashboardAdminUserPage = async () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {userData.map((item: any) => (
+                {userData.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>{item.id}</TableCell>
                     <TableCell>{item.name}</TableCell>
