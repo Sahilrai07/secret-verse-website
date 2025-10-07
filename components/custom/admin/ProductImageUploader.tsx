@@ -225,7 +225,7 @@ const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
             <p>Drop the files here ...</p>
           ) : (
             <div className="flex flex-col items-center justify-center h-full w-full gap-y-3">
-              <p>Drag 'n' drop some files here, or click to select files</p>
+              <p>Drag &quot;n&quot; drop some files here, or click to select files</p>
               <Button type="button">Select Files</Button>
             </div>
           )}

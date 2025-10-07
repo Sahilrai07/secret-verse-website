@@ -3,22 +3,17 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Package,
+  
   TrendingUp,
   Users,
   DollarSign,
-  Eye,
-  Edit3,
-  Trash2,
-  Plus,
-  Search,
-  Filter,
+
   Download,
   BarChart3,
   Star,
-  ShoppingBag,
+  
   CheckCircle,
-  Clock,
+  
   Settings,
   Bell,
   LogOut,
@@ -51,39 +46,7 @@ interface VendorStats {
   cashOnHand: number;
 }
 
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  coinPrice: number;
-  discountPrice?: number;
-  image: string;
-  category: string;
-  stock: number;
-  status: "active" | "inactive" | "out_of_stock";
-  views: number;
-  sales: number;
-  rating: number;
-  reviews: number;
-  dateAdded: string;
-}
 
-interface Order {
-  id: string;
-  customerName: string;
-  customerEmail: string;
-  products: {
-    productId: string;
-    productName: string;
-    quantity: number;
-    price: number;
-  }[];
-  total: number;
-  status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
-  orderDate: string;
-  shippingAddress: string;
-}
 
 interface User {
   id: string;
@@ -108,8 +71,6 @@ export default function VendorDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
 
   // Mock vendor data
   const [vendorInfo] = useState({
@@ -177,43 +138,43 @@ export default function VendorDashboard() {
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "text-green-400 bg-green-500/20 border-green-500/30";
-      case "inactive":
-        return "text-gray-400 bg-gray-500/20 border-gray-500/30";
-      case "out_of_stock":
-        return "text-red-400 bg-red-500/20 border-red-500/30";
-      case "pending":
-        return "text-yellow-400 bg-yellow-500/20 border-yellow-500/30";
-      case "confirmed":
-        return "text-blue-400 bg-blue-500/20 border-blue-500/30";
-      case "shipped":
-        return "text-purple-400 bg-purple-500/20 border-purple-500/30";
-      case "delivered":
-        return "text-green-400 bg-green-500/20 border-green-500/30";
-      case "cancelled":
-        return "text-red-400 bg-red-500/20 border-red-500/30";
-      default:
-        return "text-gray-400 bg-gray-500/20 border-gray-500/30";
-    }
-  };
+  // const getStatusColor = (status: string) => {
+  //   switch (status) {
+  //     case "active":
+  //       return "text-green-400 bg-green-500/20 border-green-500/30";
+  //     case "inactive":
+  //       return "text-gray-400 bg-gray-500/20 border-gray-500/30";
+  //     case "out_of_stock":
+  //       return "text-red-400 bg-red-500/20 border-red-500/30";
+  //     case "pending":
+  //       return "text-yellow-400 bg-yellow-500/20 border-yellow-500/30";
+  //     case "confirmed":
+  //       return "text-blue-400 bg-blue-500/20 border-blue-500/30";
+  //     case "shipped":
+  //       return "text-purple-400 bg-purple-500/20 border-purple-500/30";
+  //     case "delivered":
+  //       return "text-green-400 bg-green-500/20 border-green-500/30";
+  //     case "cancelled":
+  //       return "text-red-400 bg-red-500/20 border-red-500/30";
+  //     default:
+  //       return "text-gray-400 bg-gray-500/20 border-gray-500/30";
+  //   }
+  // };
 
-  const handleGetUsers = async () => {
-    try {
-      // Simulate fetching users from an API
-      const response = await fetch("/api/users/get");
-      if (!response.ok) {
-        throw new Error("Failed to fetch users");
-      }
-      const data: User[] = await response.json();
-      setUsers(data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      // Handle error appropriately, e.g., show a notification or alert
-    }
-  };
+  // const handleGetUsers = async () => {
+  //   try {
+  //     // Simulate fetching users from an API
+  //     const response = await fetch("/api/users/get");
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch users");
+  //     }
+  //     const data: User[] = await response.json();
+  //     setUsers(data);
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error);
+  //     // Handle error appropriately, e.g., show a notification or alert
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-yellow-900">
@@ -369,7 +330,7 @@ export default function VendorDashboard() {
                         Welcome back, {vendorInfo.ownerName}! 👋
                       </h2>
                       <p className="text-gray-300">
-                        Here's what's happening with your store today
+                        Here&apos;s what&apos;s happening with your store today
                       </p>
                     </div>
                     <div className="text-6xl">🏪</div>

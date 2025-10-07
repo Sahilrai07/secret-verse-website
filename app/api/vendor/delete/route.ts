@@ -33,7 +33,7 @@ export async function DELETE(req: NextRequest) {
       { message: "Vendor deleted successfully" },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("vendor delete error:", error);
     return NextResponse.json(
       { message: "Failed to delete vendor" },

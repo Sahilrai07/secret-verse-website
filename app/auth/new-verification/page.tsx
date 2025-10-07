@@ -121,7 +121,7 @@ export default function EmailVerifiedPage() {
           <div className="space-y-4">
             <XCircle size={64} className="mx-auto text-red-400" />
             <p className="text-gray-400 text-sm">
-              If you didn't receive a new link, you can request another
+              If you didn&apos;t receive a new link, you can request another
               verification email.
             </p>
             <div className="flex flex-col gap-3">

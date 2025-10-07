@@ -30,7 +30,7 @@ export async function DELETE(req: NextRequest) {
       { message: "User deleted successfully" },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("user delete error:", error);
     return NextResponse.json(
       { message: "Failed to user vendor" },

@@ -21,7 +21,7 @@ export default function UnauthorizedPage() {
         </CardHeader>
 
         <CardContent className="space-y-4 text-zinc-300">
-          <p>You don't have permission to view this page.</p>
+          <p>You don&apos;t have permission to view this page.</p>
 
           <Button
             className="w-full bg-yellow-500 hover:bg-yellow-600 text-black"

@@ -71,13 +71,13 @@ export async function POST(req: Request) {
         country,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
         password: hashedPassword,
-        vendorId: vendorId,
+        // vendorId: vendorId,
         role: role || "USER", // Default to USER if not provided
       },
     });
 
     return NextResponse.json(newUser, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating user:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

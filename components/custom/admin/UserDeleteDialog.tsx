@@ -70,7 +70,7 @@ const UserDeleteDialog = ({
       <DialogContent className=" w-full">
         <DialogHeader className="flex flex-col items-center text-center gap-2">
           <AlertTriangle className="text-red-500 w-10 h-10" />
-          <DialogTitle className="text-lg">Delete "{userName}" ?</DialogTitle>
+          <DialogTitle className="text-lg">Delete {userName} ?</DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground text-center">
             This action cannot be undone. It will permanently delete the user
             and all their associated data.
@@ -90,7 +90,7 @@ const UserDeleteDialog = ({
               {loading ? "Deleting..." : "Confirm Delete"}
             </Button>
           </div>
-        </DialogFooter>
+                  </DialogFooter>
       </DialogContent>
     </Dialog>
   );
