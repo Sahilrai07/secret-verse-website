@@ -23,13 +23,14 @@ interface PageProps {
   params: { id: string };
 }
 
+// ✅ Fetch user data by ID
 const getUserDataById = async (userId: string) => {
   const data = await prisma.user.findUnique({ where: { id: userId } });
   if (!data) notFound();
   return data;
 };
 
-// Single Info Row
+// ✅ Small reusable info row component
 const InfoRow = ({
   label,
   value,
@@ -44,15 +45,13 @@ const InfoRow = ({
     <div>
       <p className="text-xs uppercase text-muted-foreground mb-1">{label}</p>
       <p className="font-medium">
-        {value ?? (
-          <span className="italic text-muted-foreground">Not Provided</span>
-        )}
+        {value ?? <span className="italic text-muted-foreground">Not Provided</span>}
       </p>
     </div>
   </div>
 );
 
-// Section with title and responsive layout
+// ✅ Section container
 const Section = ({
   title,
   children,
@@ -62,16 +61,17 @@ const Section = ({
 }) => (
   <div className="space-y-4">
     <h3 className="text-md font-semibold text-muted-foreground">{title}</h3>
-    {/* Responsive grid: 1 column on phones, 2 on small+ */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">{children}</div>
     <hr className="border-border" />
   </div>
 );
+
 const AdminDashboardUsersViewDetailsPage = async ({ params }: PageProps) => {
   const { id } = params;
   if (!id) notFound();
 
   const user = await getUserDataById(id);
+
   const {
     name,
     email,
@@ -93,9 +93,7 @@ const AdminDashboardUsersViewDetailsPage = async ({ params }: PageProps) => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">User Details</h1>
-          <p className="text-sm text-muted-foreground">
-            View full profile information
-          </p>
+          <p className="text-sm text-muted-foreground">View full profile information</p>
         </div>
         <Link href="/admin/dashboard/users">
           <Button variant="outline" size="sm">
@@ -111,17 +109,12 @@ const AdminDashboardUsersViewDetailsPage = async ({ params }: PageProps) => {
           <CardTitle className="text-xl">Profile Overview</CardTitle>
         </CardHeader>
         <CardContent className="space-y-8 text-sm">
-          {/* Sections */}
           <Section title="Basic Information">
             <InfoRow label="Name" value={name} icon={<User size={18} />} />
             <InfoRow label="Role" value={role} icon={<Shield size={18} />} />
             <InfoRow
               label="Date of Birth"
-              value={
-                dateOfBirth
-                  ? format(new Date(dateOfBirth), "dd MMM yyyy")
-                  : null
-              }
+              value={dateOfBirth ? format(new Date(dateOfBirth), "dd MMM yyyy") : null}
               icon={<Calendar size={18} />}
             />
             <InfoRow
@@ -137,22 +130,10 @@ const AdminDashboardUsersViewDetailsPage = async ({ params }: PageProps) => {
           </Section>
 
           <Section title="Address Information">
-            <InfoRow
-              label="Address"
-              value={address}
-              icon={<MapPin size={18} />}
-            />
+            <InfoRow label="Address" value={address} icon={<MapPin size={18} />} />
             <InfoRow label="City" value={city} icon={<Building2 size={18} />} />
-            <InfoRow
-              label="State"
-              value={state}
-              icon={<Landmark size={18} />}
-            />
-            <InfoRow
-              label="Country"
-              value={country}
-              icon={<Globe size={18} />}
-            />
+            <InfoRow label="State" value={state} icon={<Landmark size={18} />} />
+            <InfoRow label="Country" value={country} icon={<Globe size={18} />} />
           </Section>
 
           <Section title="Other">
