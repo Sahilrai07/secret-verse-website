@@ -29,7 +29,7 @@ type RealmType = "daily" | "rare" | "secret";
 
 const ITEMS_PER_PAGE = 6;
 
-export const ProductsPage = () => {
+export default function ProductsPage() {
   const [tab, setTab] = useState("products");
   const [selectedRealm, setSelectedRealm] = useState<RealmType>("daily");
   const [searchTerm, setSearchTerm] = useState("");
@@ -215,4 +215,4 @@ export const ProductsPage = () => {
   );
 };
 
-export default ProductsPage;
+
