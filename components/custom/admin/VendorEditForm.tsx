@@ -48,7 +48,7 @@ interface IEditProps {
   };
 }
 
-const VendorEditForm = async ({ data }: IEditProps) => {
+const VendorEditForm =  ({ data }: IEditProps) => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(
     data.dateOfBirth ? new Date(data.dateOfBirth) : undefined

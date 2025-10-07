@@ -71,7 +71,7 @@ const VendorDeleteDialog = ({
       <DialogContent className="max-w-md">
         <DialogHeader className="flex flex-col items-center text-center gap-2">
           <AlertTriangle className="text-red-500 w-10 h-10" />
-          <DialogTitle className="text-lg">Delete "{vendorName}"?</DialogTitle>
+          <DialogTitle className="text-lg">Delete {vendorName} ?</DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground text-center">
             This action cannot be undone. It will permanently delete the vendor
             and all associated data.
