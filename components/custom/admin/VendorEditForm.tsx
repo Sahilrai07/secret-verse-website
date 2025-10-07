@@ -1,6 +1,6 @@
 "use client";
 
-import { UserRole } from "@/lib/generated/prisma";
+imp
 import { adminVendorSchema } from "@/lib/zodSchemas";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
@@ -33,7 +33,7 @@ interface IEditProps {
     id: string;
     email: string;
     password: string;
-    role: UserRole;
+    // role: UserRole;
     phone: number | null;
     createdAt: Date;
     updatedAt: Date;

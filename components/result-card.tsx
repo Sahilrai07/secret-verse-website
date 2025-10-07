@@ -112,9 +112,9 @@ export default function ResultCard({ result, contestName }: ResultCardProps) {
               transition={{ delay: 0.5 }}
               className="text-2xl font-bold text-white mb-4"
             >
-              You didn't win a cash prize,
+              You didn&apos;t win a cash prize,
               <br />
-              <span className="text-purple-400">but here's your consolation product!</span>
+              <span className="text-purple-400">but here&apos;s your consolation product!</span>
             </motion.h2>
 
             <motion.div
