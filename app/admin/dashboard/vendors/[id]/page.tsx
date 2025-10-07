@@ -1,13 +1,15 @@
-import React from 'react'
+import React from "react";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import VendorEditForm from '@/components/custom/admin/VendorEditForm';
+import VendorEditForm from "@/components/custom/admin/VendorEditForm";
+
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
 const getVendorDataById = async (vendorId: string) => {
   const data = await prisma.vendor.findUnique({
-    where: {
-      id: vendorId,
-    },
+    where: { id: vendorId },
   });
 
   if (!data) {
@@ -17,13 +19,11 @@ const getVendorDataById = async (vendorId: string) => {
   return data;
 };
 
-const VendorEditRoute = async ({ params }: { params: { id: string } }) => {
-    const vendorData = await getVendorDataById(params.id);
-  return (
-    <>
-      <VendorEditForm data={vendorData} />
-    </>
-  );
-}
+const VendorEditRoute = async ({ params }: PageProps) => {
+  const { id } = await params; // ✅ Await params first
+  const vendorData = await getVendorDataById(id);
 
-export default VendorEditRoute
+  return <VendorEditForm data={vendorData} />;
+};
+
+export default VendorEditRoute;

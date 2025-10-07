@@ -1,12 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Mail,
@@ -24,6 +18,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
+
+interface PageProps {
+  params: { id: string };
+}
 
 const getUserDataById = async (userId: string) => {
   const data = await prisma.user.findUnique({ where: { id: userId } });
@@ -69,21 +67,15 @@ const Section = ({
     <hr className="border-border" />
   </div>
 );
+const AdminDashboardUsersViewDetailsPage = async ({ params }: PageProps) => {
+  const { id } = params;
+  if (!id) notFound();
 
-const AdminDashboardUsersViewDetailsPage = async ({
-  params,
-}: {
-  params: { id: string };
-}) => {
-  const userId = params.id;
-  if (!userId) notFound();
-
-  const user = await getUserDataById(userId);
+  const user = await getUserDataById(id);
   const {
     name,
     email,
     phone,
-    gender,
     address,
     city,
     state,
@@ -97,7 +89,7 @@ const AdminDashboardUsersViewDetailsPage = async ({
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-      {/* Header with Back button */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">User Details</h1>
@@ -105,7 +97,7 @@ const AdminDashboardUsersViewDetailsPage = async ({
             View full profile information
           </p>
         </div>
-        <Link href="/admin/dashboard/users  ">
+        <Link href="/admin/dashboard/users">
           <Button variant="outline" size="sm">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
@@ -113,18 +105,23 @@ const AdminDashboardUsersViewDetailsPage = async ({
         </Link>
       </div>
 
-      {/* Main User Card */}
+      {/* Main Card */}
       <Card className="shadow-md border border-border rounded-2xl">
         <CardHeader>
           <CardTitle className="text-xl">Profile Overview</CardTitle>
         </CardHeader>
         <CardContent className="space-y-8 text-sm">
+          {/* Sections */}
           <Section title="Basic Information">
             <InfoRow label="Name" value={name} icon={<User size={18} />} />
             <InfoRow label="Role" value={role} icon={<Shield size={18} />} />
             <InfoRow
               label="Date of Birth"
-              value={dateOfBirth ? format(new Date(dateOfBirth), "dd MMM yyyy") : null}
+              value={
+                dateOfBirth
+                  ? format(new Date(dateOfBirth), "dd MMM yyyy")
+                  : null
+              }
               icon={<Calendar size={18} />}
             />
             <InfoRow
@@ -140,10 +137,22 @@ const AdminDashboardUsersViewDetailsPage = async ({
           </Section>
 
           <Section title="Address Information">
-            <InfoRow label="Address" value={address} icon={<MapPin size={18} />} />
+            <InfoRow
+              label="Address"
+              value={address}
+              icon={<MapPin size={18} />}
+            />
             <InfoRow label="City" value={city} icon={<Building2 size={18} />} />
-            <InfoRow label="State" value={state} icon={<Landmark size={18} />} />
-            <InfoRow label="Country" value={country} icon={<Globe size={18} />} />
+            <InfoRow
+              label="State"
+              value={state}
+              icon={<Landmark size={18} />}
+            />
+            <InfoRow
+              label="Country"
+              value={country}
+              icon={<Globe size={18} />}
+            />
           </Section>
 
           <Section title="Other">
