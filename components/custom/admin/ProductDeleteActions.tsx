@@ -62,7 +62,7 @@ export default function DeleteProductDialog({
         <DialogHeader className="flex flex-col items-center text-center gap-2">
           <AlertTriangle className="text-red-500 w-10 h-10" />
           <DialogTitle className="text-lg">
-            Delete "{productName}" ?
+            Delete &quot;{productName}&quot;?
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground text-center">
             This action cannot be undone. This will permanently delete the

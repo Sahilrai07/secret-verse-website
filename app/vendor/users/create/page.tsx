@@ -388,7 +388,7 @@ export default function CreateUserPage() {
                       • You can buy contest tickets on behalf of this user
                     </li>
                     <li>
-                      • All tickets purchased will be linked to this user's
+                      • All tickets purchased will be linked to this user&apos;s
                       account
                     </li>
                     <li>• The user can access their account independently</li>
