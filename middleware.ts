@@ -1,54 +1,37 @@
-// middleware.ts
+
+
+
+
 import { auth } from "@/auth";
-import { NextResponse } from "next/server";
-import {
-  publicRoutes,
-  authRoutes,
-  roleBasedRoutes,
-  protectedRoutes,
-  DEFAULT_REDIRECTS,
-} from "./route"; // import constants
+import { isApiOrAuthRoute ,isPublicRoute,handleUnauthorizedRedirect,canAccessRoleRoute,handleRoleRedirect,handleDefaultRedirect} from "./lib/middlewareUtils";
+
 
 export default auth(async (req) => {
   const pathname = req.nextUrl.pathname;
   const user = req.auth?.user;
 
-  // Allow NextAuth API endpoints
-  if (pathname.startsWith("/api/auth") || authRoutes.some((r) => pathname.startsWith(r))) {
-    return null;
+  // ✅ Allow NextAuth API endpoints
+  if (isApiOrAuthRoute(pathname)) return null;
+
+  // ✅ Allow public routes
+  if (isPublicRoute(pathname)) return null;
+
+  // 🚫 Not logged in → redirect to login
+  if (!user) return handleUnauthorizedRedirect(req);
+
+  
+
+  // 🔒 Role-based access
+  if (!canAccessRoleRoute(user.role!, pathname)) {
+    return handleRoleRedirect(req, user.role!, pathname);
   }
 
-  // Allow public routes
-  const isPublic = publicRoutes.some((r) => pathname.startsWith(r));
-  if (isPublic) return null;
-
-  // Redirect unauthenticated users to login
-  if (!user) {
-    console.log("🚫 Not logged in, redirecting to /auth/login");
-    return NextResponse.redirect(new URL("/auth/login", req.url));
-  }
-
-  // Role-based access control
-  for (const role in roleBasedRoutes) {
-    const allowedPaths = roleBasedRoutes[role];
-    if (allowedPaths.some((r) => pathname.startsWith(r))) {
-      if (user.role !== role) {
-        console.log(`🚫 User role "${user.role}" cannot access "${pathname}", redirecting to /unauthorized`);
-        return NextResponse.redirect(new URL("/unauthorized", req.url));
-      }
-    }
-  }
-
-  // Redirect authenticated users from "/" or generic pages to role-specific dashboard
+  // 🏠 Redirect "/" → role-based dashboard
   if (pathname === "/") {
-    const redirectUrl =
-      user && user.role && user.role in DEFAULT_REDIRECTS
-        ? DEFAULT_REDIRECTS[user.role as keyof typeof DEFAULT_REDIRECTS] || "/"
-        : "/";
-    console.log(`➡ Redirecting "${user.role}" to ${redirectUrl}`);
-    return NextResponse.redirect(new URL(redirectUrl, req.url));
+    return handleDefaultRedirect(req, user.role!);
   }
 
+  // ✅ Continue as normal
   return null;
 });
 
