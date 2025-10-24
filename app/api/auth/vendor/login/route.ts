@@ -23,6 +23,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Vendor not found" }, { status: 404 });
     }
 
+    if (!existingVendor.password) {
+      return NextResponse.json(
+        { error: "Vendor has no password set" },
+        { status: 401 }
+      );
+    }
+
     const isPasswordValid = await comparePassword(
       password,
       existingVendor.password

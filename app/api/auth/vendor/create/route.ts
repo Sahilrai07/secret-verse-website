@@ -4,17 +4,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const {
-      name,
-      email,
-      password,
-      phone,
-      address,
-      city,
-      state,
-      country,
-      dateOfBirth,
-    } = await request.json();
+    const { name, email, password, phone, address, city, state, country } =
+      await request.json();
 
     if (
       !name ||
@@ -24,8 +15,7 @@ export async function POST(request: Request) {
       !address ||
       !city ||
       !state ||
-      !country ||
-      !dateOfBirth
+      !country
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -55,10 +45,8 @@ export async function POST(request: Request) {
         city,
         state,
         country,
-        dateOfBirth: new Date(dateOfBirth),
       },
     });
-
     return NextResponse.json(
       {
         message: "Vendor created successfully",
