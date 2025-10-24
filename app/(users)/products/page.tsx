@@ -196,11 +196,7 @@ export default function ProductsPage() {
                   </h3>
                   <p className="text-gray-300 mb-4">${box.price}</p>
                   <Button
-                    onClick={() =>
-                      router.push(
-                        `/boxes/${box.name.toLowerCase().replace(/\s+/g, "-")}`
-                      )
-                    }
+                    onClick={() => router.push(`/rewards/opening`)}
                     className="bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition-all"
                   >
                     View Details
@@ -213,6 +209,4 @@ export default function ProductsPage() {
       </Tabs>
     </div>
   );
-};
-
-
+}
