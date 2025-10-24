@@ -35,37 +35,36 @@ export default function LoginPage() {
     defaultValues: { email: "", password: "" },
   });
   const [showPassword, setShowPassword] = useState(false);
+ 
 
-  const router = useRouter();
+const onSubmit = async (data: LoginFormValues) => {
+  try {
+    const result = await signIn("credentials", {
+      redirect: false, // ❗️changed from true → false
+      email: data.email,
+      password: data.password,
+      callbackUrl: "/", 
+    });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    try {
-      const result = await signIn("credentials", {
-        redirect: true, // ✅ Let NextAuth handle redirect + cookies
-        email: data.email,
-        password: data.password,
-        callbackUrl: "/", // ✅ redirect after login
-      });
-
-      // If using redirect: true, the user will be redirected automatically
-      // No need to manually handle window.location.href
-      if (result?.error) {
-        setError("password", {
-          type: "server",
-          message: "Invalid email or password",
-        });
-        toast.error(
-          "Login failed. Please check your credentials and try again."
-        );
-      }
-    } catch (error) {
+    if (result?.error) {
       setError("password", {
         type: "server",
         message: "Invalid email or password",
       });
       toast.error("Login failed. Please check your credentials and try again.");
+    } else {
+      toast.success("Login successful!");
+      window.location.href = result?.url || "/";
     }
-  };
+  } catch (error) {
+    console.error("Error on the Login Page :: ", error);
+    setError("password", {
+      type: "server",
+      message: "Invalid email or password",
+    });
+    toast.error("Login failed. Please check your credentials and try again.");
+  }
+};
 
   return (
     <motion.div

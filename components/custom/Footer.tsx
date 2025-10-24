@@ -3,10 +3,17 @@
 import { motion } from "framer-motion";
 import { Facebook, Twitter, Instagram, Youtube, Mail } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
   const [subscribed, setSubscribed] = useState(false);
+  const [year, setYear] = useState("");
+
+  useEffect(() => {
+    setYear(new Date().getFullYear().toString());
+  }, []);
+
+  if (!year) return null; // optional: avoids flicker on first load
 
   const sections = {
     "Quick Links": [
@@ -148,7 +155,7 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="border-t border-yellow-500/10 py-4 text-center text-sm text-gray-500">
-        © {new Date().getFullYear()}{" "}
+        © {year}{" "}
         <span className="text-yellow-400 font-medium">Secret Verser</span>. All
         rights reserved.
       </div>
