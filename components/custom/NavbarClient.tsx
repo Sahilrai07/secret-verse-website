@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ShoppingCart, User, Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { signIn, signOut } from "next-auth/react"; // ✅ only client here
+import { signOut } from "next-auth/react"; // ✅ only client here
 import type { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 
@@ -37,7 +37,7 @@ export default function NavbarClient({ session }: { session: Session | null }) {
         <nav className="hidden md:flex items-center space-x-8 text-sm font-medium">
           {isLoggedIn ? (
             <>
-              {["Products", "Mystery Box", "Orders", "About"].map((item) => (
+              {["Products", "Market", "Orders", "About"].map((item) => (
                 <motion.a
                   key={item}
                   href={`/${item.toLowerCase().replace(" ", "-")}`}
@@ -50,17 +50,19 @@ export default function NavbarClient({ session }: { session: Session | null }) {
               ))}
             </>
           ) : (
-            ["Home", "Products", "Categories", "Deals", "Contact"].map((item) => (
-              <motion.a
-                key={item}
-                href={`/${item.toLowerCase()}`}
-                className="text-gray-200 hover:text-yellow-400 transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {item}
-              </motion.a>
-            ))
+            ["Home", "Products", "Categories", "Deals", "Contact"].map(
+              (item) => (
+                <motion.a
+                  key={item}
+                  href={item === "Home " ? "/" : ` /${item.toLowerCase()}`}
+                  className="text-gray-200 hover:text-yellow-400 transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {item}
+                </motion.a>
+              )
+            )
           )}
         </nav>
 
@@ -105,7 +107,10 @@ export default function NavbarClient({ session }: { session: Session | null }) {
               >
                 Login / Register
               </Button>
-              <Button className="bg-yellow-500 text-black hover:bg-yellow-600 rounded-full px-6 py-2 font-semibold shadow-md shadow-yellow-500/30">
+              <Button
+                onClick={() => router.push("/auth/vendor/login")} // ✅ client-safe navigation
+                className="bg-yellow-500 text-black hover:bg-yellow-600 rounded-full px-6 py-2 font-semibold shadow-md shadow-yellow-500/30"
+              >
                 Become a Vendor
               </Button>
             </div>
@@ -134,7 +139,7 @@ export default function NavbarClient({ session }: { session: Session | null }) {
         >
           {isLoggedIn ? (
             <>
-              {["Products", "Mystery Box", "Orders", "About"].map((item) => (
+              {["Products", "Market", "Orders", "About"].map((item) => (
                 <a
                   key={item}
                   href={`/${item.toLowerCase().replace(" ", "-")}`}
@@ -156,7 +161,7 @@ export default function NavbarClient({ session }: { session: Session | null }) {
                 (item) => (
                   <a
                     key={item}
-                    href={`/${item.toLowerCase()}`}
+                    href={item === "Home " ? "/" : ` /${item.toLowerCase()}`}
                     className="block text-gray-200 hover:text-yellow-400 text-lg"
                   >
                     {item}
@@ -169,7 +174,10 @@ export default function NavbarClient({ session }: { session: Session | null }) {
               >
                 Login / Register
               </Button>
-              <Button className="w-full bg-yellow-500 text-black hover:bg-yellow-600 rounded-full font-semibold cursor-pointer">
+              <Button
+                onClick={() => router.push("/auth/vendor/login")} // ✅ client-safe navigation
+                className="w-full bg-yellow-500 text-black hover:bg-yellow-600 rounded-full font-semibold cursor-pointer"
+              >
                 Become a Vendor
               </Button>
             </>
