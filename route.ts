@@ -16,7 +16,7 @@ export const apiAuthPrefix = "/auth";
 
 // ✅ Default redirects after login based on role
 export const DEFAULT_REDIRECTS = {
-  USER: "/shop",
+  USER: "/products",
   ADMIN: "/admin/dashboard",
   VENDOR: "/vendor/dashboard",
 } as const;
@@ -25,7 +25,14 @@ export const DEFAULT_REDIRECTS = {
 export const roleBasedRoutes: Record<string, string[]> = {
   ADMIN: ["/admin"],
   VENDOR: ["/vendor"],
-  USER: ["/shop"], // optional if you want user-only routes
+  USER: ["/prodouts",
+    "/cart",
+    "/checkout",
+    "/market",
+    "/profile",
+    "/rewards/opening",
+    "/settings"
+  ], // optional if you want user-only routes
 };
 
 // ✅ Protected routes = union of all role-based routes

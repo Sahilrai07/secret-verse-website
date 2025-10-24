@@ -1,8 +1,7 @@
 "use client";
+
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -19,52 +18,44 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
-import { LoginSchema } from "@/schema";
-import { tree } from "next/dist/build/templates/app-page";
 
-type LoginFormValues = z.infer<typeof LoginSchema>;
+const AdminLoginSchema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 
-export default function LoginPage() {
+type AdminLoginFormValues = z.infer<typeof AdminLoginSchema>;
+
+export default function AdminLoginPage() {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(LoginSchema),
+  } = useForm<AdminLoginFormValues>({
+    resolver: zodResolver(AdminLoginSchema),
     defaultValues: { email: "", password: "" },
   });
+
   const [showPassword, setShowPassword] = useState(false);
 
-  const router = useRouter();
+  const onSubmit = async (data: AdminLoginFormValues) => {
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+      // Optionally: pass a role flag to differentiate admin login on backend
+      role: "ADMIN",
+    });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    try {
-      const result = await signIn("credentials", {
-        redirect: true, // ✅ Let NextAuth handle redirect + cookies
-        email: data.email,
-        password: data.password,
-        callbackUrl: "/", // ✅ redirect after login
-      });
-
-      // If using redirect: true, the user will be redirected automatically
-      // No need to manually handle window.location.href
-      if (result?.error) {
-        setError("password", {
-          type: "server",
-          message: "Invalid email or password",
-        });
-        toast.error(
-          "Login failed. Please check your credentials and try again."
-        );
-      }
-    } catch (error) {
-      setError("password", {
-        type: "server",
-        message: "Invalid email or password",
-      });
+    if (result?.error) {
+      setError("password", { type: "server", message: "Invalid email or password" });
       toast.error("Login failed. Please check your credentials and try again.");
+      return;
     }
+
+    toast.success("Welcome Admin! You've successfully logged in.");
+    window.location.href = "/admin/dashboard"; // redirect to admin dashboard
   };
 
   return (
@@ -77,10 +68,10 @@ export default function LoginPage() {
       {/* Header */}
       <CardHeader className="text-center space-y-2 pb-6">
         <CardTitle className="text-3xl md:text-4xl font-playfair text-yellow-400">
-          Welcome Back
+          Admin Login
         </CardTitle>
         <CardDescription className="text-gray-300">
-          Sign in to continue your journey
+          Sign in to access the admin dashboard
         </CardDescription>
       </CardHeader>
 
@@ -90,7 +81,6 @@ export default function LoginPage() {
           className="space-y-6"
           onSubmit={handleSubmit(onSubmit)}
           noValidate
-          aria-describedby="login-form-errors"
         >
           {/* Email */}
           <div className="space-y-2">
@@ -100,7 +90,7 @@ export default function LoginPage() {
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="admin@example.com"
               {...register("email")}
               aria-invalid={!!errors.email}
               aria-describedby={errors.email ? "email-error" : undefined}
@@ -117,9 +107,7 @@ export default function LoginPage() {
           <div className="space-y-2 relative">
             <Label
               htmlFor="password"
-              className={`text-sm ${
-                errors.password ? "text-red-400" : "text-gray-300"
-              }`}
+              className={`text-sm ${errors.password ? "text-red-400" : "text-gray-300"}`}
             >
               Password
             </Label>
@@ -145,41 +133,8 @@ export default function LoginPage() {
               </button>
             </div>
             {errors.password && (
-              <p className="text-red-400 text-sm mt-1">
-                {errors.password.message}
-              </p>
+              <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
             )}
-          </div>
-
-          {/* Terms & Policy */}
-          <div className="flex items-start gap-2">
-            <Input
-              id="terms"
-              type="checkbox"
-              className="mt-1 w-4 h-4 text-yellow-400 bg-black/40 border-gray-600 rounded focus:ring-yellow-400"
-            />
-            <div className="text-sm text-gray-400">
-              <Label htmlFor="terms" className="cursor-pointer">
-                I agree to the{" "}
-                <a href="/terms" className="text-yellow-400 hover:underline">
-                  Terms
-                </a>{" "}
-                &{" "}
-                <a href="/privacy" className="text-yellow-400 hover:underline">
-                  Privacy Policy
-                </a>
-              </Label>
-            </div>
-          </div>
-
-          {/* Forgot Password */}
-          <div className="flex justify-end">
-            <a
-              href="/auth/forgot-password"
-              className="text-sm text-yellow-400 hover:underline"
-            >
-              Forgot Password?
-            </a>
           </div>
 
           {/* Login Button */}
@@ -193,36 +148,6 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        {/* Divider */}
-        <div className="relative flex items-center justify-center my-4">
-          <div className="absolute w-full h-px bg-gray-700"></div>
-          <span className="relative bg-gray-900/40 px-3 text-gray-400 text-sm">
-            OR
-          </span>
-        </div>
-
-        {/* Google Button */}
-        <Button
-          type="button"
-          onClick={() => signIn("google", { callbackUrl: "/" })}
-          variant="outline"
-          className="w-full flex items-center justify-center gap-2 border-gray-600 text-gray-200 hover:text-white bg-black/40 hover:bg-gray-800 rounded-full py-3 transition-all duration-300"
-        >
-          <FcGoogle className="text-xl" />
-          Continue with Google
-        </Button>
-
-        {/* Register Link */}
-        <p className="text-center text-gray-400 mt-6 text-sm">
-          Don’t have an account?{" "}
-          <a
-            href="/auth/register"
-            className="text-yellow-400 hover:underline font-medium"
-          >
-            Register here
-          </a>
-        </p>
-
         {/* Bottom Text */}
         <p className="text-center text-xs text-gray-500 mt-8">
           By signing in, you agree to our{" "}
@@ -233,8 +158,7 @@ export default function LoginPage() {
           <a href="/privacy" className="text-yellow-400 hover:underline">
             Privacy Policy
           </a>
-          . <br />© {new Date().getFullYear()} Secret Verse. All rights
-          reserved.
+          . <br />© {new Date().getFullYear()} Secret Verse. All rights reserved.
         </p>
       </CardContent>
     </motion.div>

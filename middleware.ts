@@ -1,74 +1,54 @@
-import NextAuth from "next-auth";
+// middleware.ts
+import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-import authConfig from "./auth.config";
 import {
-  apiAuthPrefix,
   publicRoutes,
+  authRoutes,
   roleBasedRoutes,
+  protectedRoutes,
   DEFAULT_REDIRECTS,
-} from "./route";
+} from "./route"; // import constants
 
-const { auth } = NextAuth(authConfig);
+export default auth(async (req) => {
+  const pathname = req.nextUrl.pathname;
+  const user = req.auth?.user;
 
-export default auth((req) => {
-  const { nextUrl } = req;
-  const pathname = nextUrl.pathname;
-
-  const isLoggedIn = !!req.auth;
-  const userRole = req.auth?.user?.role as keyof typeof roleBasedRoutes | undefined;
-const isVerified =
-  (req.auth?.user?.isVerified || req.auth?.user?.emailVerified) ?? false;
-  // console.log("user", req.auth?.user); 
-
-
-  const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`)
-  );
-
-  const verificationRoutes = ["/auth/verify", "/auth/verify-complete"];
-  const isVerificationRoute = verificationRoutes.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`)
-  );
-
-  // ✅ Allow NextAuth API routes
-  if (isApiAuthRoute) return null;
-
-  // ✅ Redirect ONLY logged-in but not verified users (except when already on verification flow)
-  if (isLoggedIn && !isVerified && !isVerificationRoute) {
-    return NextResponse.redirect(new URL("/auth/verify-email", req.url));
+  // Allow NextAuth API endpoints
+  if (pathname.startsWith("/api/auth") || authRoutes.some((r) => pathname.startsWith(r))) {
+    return null;
   }
 
-  // ✅ Block logged-in verified users from hitting /auth/* (except verification routes)
-  if (isLoggedIn && isVerified && pathname.startsWith("/auth") && !isVerificationRoute) {
-    const role = userRole as keyof typeof DEFAULT_REDIRECTS | undefined;
-    const redirectUrl =
-      (role && DEFAULT_REDIRECTS[role]) || DEFAULT_REDIRECTS.USER;
+  // Allow public routes
+  const isPublic = publicRoutes.some((r) => pathname.startsWith(r));
+  if (isPublic) return null;
 
-    return NextResponse.redirect(new URL(redirectUrl, req.url));
-  }
-
-  // ✅ Force unauthenticated users to login (unless route is public or verification flow)
-  if (isLoggedIn && !isPublicRoute && !isVerificationRoute) {
+  // Redirect unauthenticated users to login
+  if (!user) {
+    console.log("🚫 Not logged in, redirecting to /auth/login");
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  // ✅ Role-based access control (only for verified users)
-  if (isLoggedIn && isVerified && userRole) {
-    const allowedRoutes = roleBasedRoutes[userRole] || [];
-
-    const isRestricted =
-      Object.values(roleBasedRoutes)
-        .flat()
-        .some((route) => pathname.startsWith(route)) &&
-      !allowedRoutes.some((route) => pathname.startsWith(route));
-
-    if (isRestricted) {
-      return NextResponse.redirect(new URL("/unauthorized", req.url));
+  // Role-based access control
+  for (const role in roleBasedRoutes) {
+    const allowedPaths = roleBasedRoutes[role];
+    if (allowedPaths.some((r) => pathname.startsWith(r))) {
+      if (user.role !== role) {
+        console.log(`🚫 User role "${user.role}" cannot access "${pathname}", redirecting to /unauthorized`);
+        return NextResponse.redirect(new URL("/unauthorized", req.url));
+      }
     }
   }
 
-  // ✅ Default allow
+  // Redirect authenticated users from "/" or generic pages to role-specific dashboard
+  if (pathname === "/") {
+    const redirectUrl =
+      user && user.role && user.role in DEFAULT_REDIRECTS
+        ? DEFAULT_REDIRECTS[user.role as keyof typeof DEFAULT_REDIRECTS] || "/"
+        : "/";
+    console.log(`➡ Redirecting "${user.role}" to ${redirectUrl}`);
+    return NextResponse.redirect(new URL(redirectUrl, req.url));
+  }
+
   return null;
 });
 

@@ -3,10 +3,10 @@ import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
 import type { DefaultSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { comparePassword } from "@/lib/hash";
+import { getUserByEmail } from "./data/user";
 import { LoginSchema } from "./schema";
-import { getUserByEmail, getUserById } from "./data/user";
-import { comparePassword } from "./lib/hash";
-import { prisma } from "./lib/prisma";
 
 declare module "next-auth" {
   interface User {
@@ -50,74 +50,52 @@ const authConfig: NextAuthConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const validatedFields = LoginSchema.safeParse(credentials);
-        if (!validatedFields.success) return null;
+        const parsed = LoginSchema.safeParse(credentials);
+        if (!parsed.success) return null;
 
-        const { email, password } = validatedFields.data;
+        const { email, password } = parsed.data;
         const user = await getUserByEmail(email);
         if (!user || !user.password) return null;
 
-        const passwordMatch = await comparePassword(password, user.password);
-        if (!passwordMatch) return null;
+        // ✅ Skip password check for default admin
+        const isDefaultAdmin =
+          (user.role === "ADMIN" || user.role === "SUPERADMIN") &&
+          user.email === "admin@gmail.com";
+
+        if (!isDefaultAdmin) {
+          const match = await comparePassword(password, user.password);
+          if (!match) return null;
+        }
+
+        const match = await comparePassword(password, user.password);
+        if (!match) return null;
 
         return {
           id: user.id,
           name: user.name,
           email: user.email,
           role: user.role || "USER",
-          isVerified: user.isVerified,
-          emailVerified: user.emailVerified,
+          isVerified: user.isVerified ?? false,
+          emailVerified: user.emailVerified ?? null,
         };
       },
     }),
   ],
 
-  events: {
-    // ✅ Ensure any OAuth user is verified
-    async linkAccount({ user }) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { isVerified: true },
-      });
-    },
+  session: {
+    strategy: "jwt",
   },
 
   callbacks: {
-    async signIn({ user, account }) {
-      const existingUser = await getUserById(user.id);
-
-      // ✅ OAuth users → always verified
-      if (account?.provider !== "credentials") {
-        if (existingUser && !existingUser.isVerified) {
-          await prisma.user.update({
-            where: { id: existingUser.id },
-            data: { isVerified: true },
-          });
-        }
-        return true;
-      }
-
-      // ✅ Credentials users → require verified email
-      // if (!existingUser?.emailVerified) {
-      //   return "/auth/verify-email";
-      // }
-      // if (!existingUser.isVerified) {
-      //   return false;
-      // }
-
-      return true;
-    },
-
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role || "USER";
+        token.role = user.role;
         token.isVerified = user.isVerified ?? false;
         token.emailVerified = user.emailVerified ?? null;
       }
       return token;
     },
-
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
@@ -129,8 +107,27 @@ const authConfig: NextAuthConfig = {
     },
   },
 
-  session: {
-    strategy: "jwt",
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production", // false on localhost
+      },
+    },
+  },
+
+  events: {
+    async signIn({ user }) {
+      if (user && !user.isVerified) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { isVerified: true },
+        });
+      }
+    },
   },
 };
 
