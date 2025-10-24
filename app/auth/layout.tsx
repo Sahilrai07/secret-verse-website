@@ -7,8 +7,6 @@ import { Home } from "lucide-react";
 
 interface AuthLayoutProps {
   children: ReactNode;
-  title?: string;
-  description?: string;
 }
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
