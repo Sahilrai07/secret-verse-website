@@ -1,39 +1,50 @@
 import { NextResponse } from "next/server";
-import { publicRoutes, authRoutes, roleBasedRoutes, DEFAULT_REDIRECTS } from "../route";
+import type { NextRequest } from "next/server";
 
-export const isApiOrAuthRoute = (pathname: string) => {
-  return pathname.startsWith("/api/auth") || authRoutes.some((r) => pathname.startsWith(r));
-};
+import {
+  publicRoutes,
+  authRoutes,
+  roleBasedRoutes,
+  DEFAULT_REDIRECTS,
+} from "@/route"; // small constants only
+import { getAuthUser } from "./authCheck";
 
-export const isPublicRoute = (pathname: string) => {
-  return publicRoutes.some((r) => pathname.startsWith(r));
-};
+export async function handleMiddleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
+  const user = await getAuthUser(req);
 
-export const handleUnauthorizedRedirect = (req: Request) => {
-  console.log("🚫 Not logged in, redirecting to /auth/login");
-  return NextResponse.redirect(new URL("/auth/login", req.url));
-};
+  // Allow NextAuth API endpoints
+  if (pathname.startsWith("/api/auth") || authRoutes.some(r => pathname.startsWith(r))) {
+    return NextResponse.next();
+  }
 
-export const handleRoleRedirect = (req: Request, role: string, pathname: string) => {
-  console.log(`🚫 User role "${role}" cannot access "${pathname}", redirecting to /unauthorized`);
-  return NextResponse.redirect(new URL("/unauthorized", req.url));
-};
+  // Public routes
+  const isPublic = publicRoutes.some(r => pathname.startsWith(r));
+  if (isPublic) return NextResponse.next();
 
-export const handleDefaultRedirect = (req: Request, userRole: string) => {
-  const redirectUrl =
-    userRole && userRole in DEFAULT_REDIRECTS
-      ? DEFAULT_REDIRECTS[userRole as keyof typeof DEFAULT_REDIRECTS]
-      : "/";
-  console.log(`➡ Redirecting "${userRole}" to ${redirectUrl}`);
-  return NextResponse.redirect(new URL(redirectUrl, req.url));
-};
+  // Redirect unauthenticated users
+  if (!user) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
 
-export const canAccessRoleRoute = (role: string, pathname: string) => {
-  for (const r in roleBasedRoutes) {
-    const allowedPaths = roleBasedRoutes[r];
-    if (allowedPaths.some((path) => pathname.startsWith(path))) {
-      return r === role;
+  // Role-based routes
+  for (const role in roleBasedRoutes) {
+    const allowedPaths = roleBasedRoutes[role];
+    if (allowedPaths.some(r => pathname.startsWith(r))) {
+      if (user.role !== role) {
+        return NextResponse.redirect(new URL("/unauthorized", req.url));
+      }
     }
   }
-  return true;
-};
+
+  // Redirect authenticated users from "/" to dashboard
+  if (pathname === "/") {
+    const redirectUrl =
+      user?.role && user.role in DEFAULT_REDIRECTS
+        ? DEFAULT_REDIRECTS[user.role as keyof typeof DEFAULT_REDIRECTS]
+        : "/";
+    return NextResponse.redirect(new URL(redirectUrl, req.url));
+  }
+
+  return NextResponse.next();
+}
